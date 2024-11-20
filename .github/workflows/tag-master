@@ -1,0 +1,20 @@
+name: Tag on merge
+on:
+  push:
+    branches:
+      - main
+env:
+  TAG: "$(date +%Y%m%d)"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set tag
+        run: echo "PR_TAG=$(date +%Y%m%d)" >> $GITHUB_ENV
+      - name: Create tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        custom_tag: $PR_TAG
