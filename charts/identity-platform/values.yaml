@@ -49,7 +49,7 @@ platform:
 
     hosts:
       - identity-platform.domain.local
-      # - identity-platform-2.local
+      # - identity-platform-2.domain.local
     tls:
       # cert-manager must be deployed in order create/use a certificate issuer
       issuer:
