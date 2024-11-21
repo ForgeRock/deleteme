@@ -52,6 +52,7 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           charts_dir: charts
+          pages_branch: gh-pages
 
       - name: Create tag
         id: tag_version
