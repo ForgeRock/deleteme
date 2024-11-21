@@ -24,7 +24,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ vars.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
-      
+
       - name: Set tag
         id: set_tag
         #run: echo "BUILD_TAG=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
@@ -40,7 +40,17 @@ jobs:
             ./docker-bake.hcl
           #set: |
           #  default.TAG=${{ steps.set_tag.outputs.PR_TAG }}
-      
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Create tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.0
