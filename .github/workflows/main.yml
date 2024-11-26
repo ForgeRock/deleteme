@@ -71,3 +71,11 @@ jobs:
           #custom_tag: ${{ steps.set_tag.outputs.PR_TAG }}
           custom_tag: ${{ env.BUILD_TAG }}
 
+      - name: Create GitHub release
+        id: create_github_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
