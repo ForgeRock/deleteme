@@ -77,4 +77,5 @@ jobs:
           #body: ${{ steps.tag_version.outputs.changelog }}
           bodyFile: CHANGELOG.md
           generateReleaseNotes: true
+          makeLatest: true
 
