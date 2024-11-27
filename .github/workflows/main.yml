@@ -32,7 +32,6 @@ jobs:
 
       - name: Set tag
         id: set_tag
-        #run: echo "BUILD_TAG=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
         run: echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Build
@@ -43,8 +42,6 @@ jobs:
           push: true
           files: |
             ./docker-bake.hcl
-          #set: |
-          #  default.TAG=${{ steps.set_tag.outputs.PR_TAG }}
 
       - name: Install Helm
         uses: azure/setup-helm@v4
@@ -68,8 +65,8 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          #custom_tag: ${{ steps.set_tag.outputs.PR_TAG }}
           custom_tag: ${{ env.BUILD_TAG }}
+          tag_prefix: ""
 
       - name: Create GitHub release
         id: create_github_release
