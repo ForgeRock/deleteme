@@ -77,7 +77,7 @@ jobs:
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
+          #body: ${{ steps.tag_version.outputs.changelog }}
           bodyFile: CHANGELOG.md
           generateReleaseNotes: true
 
