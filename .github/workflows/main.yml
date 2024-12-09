@@ -79,3 +79,19 @@ jobs:
           generateReleaseNotes: true
           makeLatest: true
 
+      - name: Send Slack notification
+        id: send_slack_notification
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          #payload-delimiter: "_"
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "ForgeOps release ${{ steps.tag_version.outputs.newtag }}"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdown"
+                  text: "${{ steps.create_github_release.outputs.html_url }}"
+
