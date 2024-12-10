@@ -81,7 +81,7 @@ jobs:
 
       - name: Get changelog
         id: get_changelog
-        run: echo "CHANGELOG=$(cat CHANGELOG.md 2>/dev/null)" >> $GITHUB_ENV
+        run: echo "CHANGELOG=\$(cat <<'EOF'" >>$GITHUB_ENV && cat CHANGELOG.md >>$GITHUB_ENV && echo "EOF" >>$GITHUB_ENV && echo ")" >>$GITHUB_ENV
 
       - name: Send Slack notification
         id: send_slack_notification
