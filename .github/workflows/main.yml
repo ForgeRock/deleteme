@@ -96,11 +96,11 @@ jobs:
           webhook-type: webhook-trigger
           #payload-delimiter: "_"
           payload: |
-            channel: ${{ secrets.SLACK_CHANNEL_ID }}
-            text: "ForgeOps release ${{ steps.tag_version.outputs.newtag }}"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdown"
-                  text: "${{ steps.create_github_release.outputs.html_url }}"
+            #channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            msg: "ForgeOps release ${{ steps.tag_version.outputs.newtag }}"
+            #blocks:
+            #  - type: "section"
+            #    text:
+            #      type: "mrkdown"
+            #      text: "${{ steps.create_github_release.outputs.html_url }}"
 
