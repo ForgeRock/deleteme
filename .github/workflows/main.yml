@@ -81,7 +81,9 @@ jobs:
 
       - name: Get changelog
         id: get_changelog
-        run: echo "CHANGELOG=\$(cat <<'EOF'" >>$GITHUB_ENV && cat CHANGELOG.md >>$GITHUB_ENV && echo "EOF" >>$GITHUB_ENV && echo ")" >>$GITHUB_ENV
+        run: |
+          changelog="$(cat CHANGELOG.md)"
+          echo -e "msg_changelog=\$(cat <<'EOF'\n$changelog\nEOF\n)" >>$GITHUB_OUTPUT
 
       - name: Send Slack notification
         id: send_slack_notification
@@ -90,5 +92,5 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
           payload: |
-            msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ env.CHANGELOG }}"
+            msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ steps.get_changelog.outputs.msg_changelog }}"
 
