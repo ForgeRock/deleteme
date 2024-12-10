@@ -79,14 +79,9 @@ jobs:
           generateReleaseNotes: true
           makeLatest: true
 
-      #- name: Send Slack notification2
-      #  id: send_slack_notification2
-      #  uses: rtCamp/action-slack-notify@v2
-      #  env:
-      #    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #    SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID }}
-      #    SLACK_USERNAME: "ForgeOps_Release"
-      #    SLACK_TITLE: "ForgeOps Release"
+      - name: Get changelog
+        id: get_changelog
+        run: echo "CHANGELOG=$(cat CHANGELOG.md 2>/dev/null)" >> $GITHUB_ENV
 
       - name: Send Slack notification
         id: send_slack_notification
@@ -94,13 +89,6 @@ jobs:
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
-          #payload-delimiter: "_"
           payload: |
-            #channel: ${{ secrets.SLACK_CHANNEL_ID }}
-            msg: "ForgeOps release ${{ steps.tag_version.outputs.newtag }}"
-            #blocks:
-            #  - type: "section"
-            #    text:
-            #      type: "mrkdown"
-            #      text: "${{ steps.create_github_release.outputs.html_url }}"
+            msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ env.CHANGELOG }}"
 
