@@ -72,6 +72,10 @@ jobs:
           custom_tag: ${{ env.BUILD_TAG }}
           tag_prefix: ""
 
+      - name: Touch CHANGELOG.md
+        run: |
+          touch CHANGELOG.md
+
       - name: Create GitHub release
         id: create_github_release
         uses: ncipollo/release-action@v1
