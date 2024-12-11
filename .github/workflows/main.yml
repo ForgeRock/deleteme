@@ -86,7 +86,7 @@ jobs:
       - name: Set helm chart URL
         id: set_helm_chart_url
         run: |
-          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url" | sed -ie "s/$BUILD_TAG/identity-platform-$BUILD_TAG/" >>$GITHUB_ENV
+          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -ie "s/$BUILD_TAG/identity-platform-$BUILD_TAG/" >>$GITHUB_ENV
 
       - name: Send Slack notification
         id: send_slack_notification
