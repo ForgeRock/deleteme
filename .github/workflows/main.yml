@@ -95,5 +95,5 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
           payload: |
-            msg: "${{ steps.create_github_release.outputs.html_url }} ${{ env.HELM_RELEASE_URL }}"
+            msg: "${{ env.HELM_RELEASE_URL }}\n${{ steps.create_github_release.outputs.html_url }}"
 
