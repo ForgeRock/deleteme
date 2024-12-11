@@ -50,11 +50,12 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Update chart version
-        id: update_chart_version
+      - name: Update helm chart
+        id: update_helm_chart
         run: |
-          sed -ie "s/^version:.*/version:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml
-          sed -ie "s/^appVersion:.*/appVersion:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml
+          sed -ie "s/^version:.*/version:\ ${{ env.BUILD_TAG }}/" charts/identity-platform/Chart.yaml
+          sed -ie "s/^appVersion:.*/appVersion:\ ${{ env.BUILD_TAG }}/" charts/identity-platform/Chart.yaml
+          sed -ie "s/tag:.*/tag:\ ${{ env.BUILD_TAG }}/g" charts/identity-platform/values.yaml
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
