@@ -30,10 +30,23 @@ jobs:
           username: ${{ vars.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
+      - name: Get latest release
+        id: get_latest_release
+        uses: joutvhu/get-release@v1
+        with:
+          latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set tag
         id: set_tag
         run: |
-          echo "RELEASE_TAG=$(date +%Y.%m)" >> $GITHUB_ENV
+          RELEASE_TAG=$(date +%Y.%m)
+          latest_tag=${{ steps.get_latest_release.outputs.tag_name }}
+          [[ $latest_tag == ${RELEASE_TAG}* ]] && patch=$(echo $latest_tag | sed -e "s/^$RELEASE_TAG.\(.*\)/\1/")
+          [ -n "$patch" ] && patch=$((patch+1)) || patch=0
+          RELEASE_TAG="$RELEASE_TAG.$patch"
+          echo "RELEASE_TAG=$RELESE_TAG" >> $GITHUB_ENV
           echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Build
@@ -53,8 +66,8 @@ jobs:
       - name: Update helm chart
         id: update_helm_chart
         run: |
-          sed -ie "s/^version:.*/version:\ ${{ env.BUILD_TAG }}/" charts/identity-platform/Chart.yaml
-          sed -ie "s/^appVersion:.*/appVersion:\ ${{ env.BUILD_TAG }}/" charts/identity-platform/Chart.yaml
+          sed -ie "s/^version:.*/version:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
+          sed -ie "s/^appVersion:.*/appVersion:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
           sed -ie "s/tag:.*/tag:\ ${{ env.BUILD_TAG }}/g" charts/identity-platform/values.yaml
 
       - name: Run chart-releaser
@@ -70,7 +83,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: ${{ env.BUILD_TAG }}
+          custom_tag: ${{ env.RELEASE_TAG }}
           tag_prefix: ""
 
       - name: Touch CHANGELOG.md
@@ -99,7 +112,7 @@ jobs:
       - name: Set helm chart URL
         id: set_helm_chart_url
         run: |
-          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -e "s/${{ env.BUILD_TAG }}/identity-platform-${{ env.BUILD_TAG }}/" >>$GITHUB_ENV
+          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -e "s/${{ env.RELEASE_TAG }}/identity-platform-${{ env.RELEASE_TAG }}/" >>$GITHUB_ENV
 
       - name: Send Slack helm release notification
         uses: slackapi/slack-github-action@v2.0.0
