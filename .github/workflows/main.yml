@@ -48,7 +48,7 @@ jobs:
           [ "$RELEASE_TAG" == "$major.$minor" ] && patch=$(echo $latest_tag | sed -e "s/^$RELEASE_TAG.\(.*\)/\1/")
           [ -n "$patch" ] && patch=$((patch+1)) || patch=0
           RELEASE_TAG="$RELEASE_TAG.$patch"
-          echo "RELEASE_TAG=$RELESE_TAG" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
           echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Build
