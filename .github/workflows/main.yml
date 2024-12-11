@@ -98,12 +98,5 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
           payload: |
-            text: "${{ steps.get_changelog.outputs.msg_changelog }}"
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdown"
-                  text: "${{ steps.get_changelog.outputs.msg_changelog }}"
-
-            #msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ steps.get_changelog.outputs.msg_changelog }}"
+            msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ steps.get_changelog.outputs.msg_changelog }}"
 
