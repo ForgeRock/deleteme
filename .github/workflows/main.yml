@@ -43,7 +43,9 @@ jobs:
         run: |
           RELEASE_TAG=$(date +%Y.%m)
           latest_tag=${{ steps.get_latest_release.outputs.tag_name }}
-          [[ $latest_tag == ${RELEASE_TAG}* ]] && patch=$(echo $latest_tag | sed -e "s/^$RELEASE_TAG.\(.*\)/\1/")
+          major="$(echo $latest_tag | awk -F. '{print $1}')"
+          minor="$(echo $latest_tag | awk -F. '{print $2}')"
+          [ "$RELEASE_TAG" == "$major.$minor" ] && patch=$(echo $latest_tag | sed -e "s/^$RELEASE_TAG.\(.*\)/\1/")
           [ -n "$patch" ] && patch=$((patch+1)) || patch=0
           RELEASE_TAG="$RELEASE_TAG.$patch"
           echo "RELEASE_TAG=$RELESE_TAG" >> $GITHUB_ENV
