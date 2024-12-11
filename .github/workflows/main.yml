@@ -86,7 +86,7 @@ jobs:
       - name: Set helm chart URL
         id: set_helm_chart_url
         run: |
-          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -e "s/$BUILD_TAG/identity-platform-$BUILD_TAG/" >>$GITHUB_ENV
+          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -e "s/${{ env.BUILD_TAG }}/identity-platform-${{ env.BUILD_TAG }}/" >>$GITHUB_ENV
 
       - name: Send Slack notification
         id: send_slack_notification
@@ -95,5 +95,5 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
           payload: |
-            msg: "${{ steps.create_github_release.outputs.html_url }} $HELM_RELEASE_URL"
+            msg: "${{ steps.create_github_release.outputs.html_url }} ${{ env.HELM_RELEASE_URL }}"
 
