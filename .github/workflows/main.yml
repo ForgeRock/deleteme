@@ -32,7 +32,9 @@ jobs:
 
       - name: Set tag
         id: set_tag
-        run: echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+        run: |
+          echo "RELEASE_TAG=$(date +%Y.%m)" >> $GITHUB_ENV
+          echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
 
       - name: Build
         id: bake
@@ -50,7 +52,9 @@ jobs:
 
       - name: Update chart version
         id: update_chart_version
-        run: sed -ie "s/^version:.*/version:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml && sed -ie "s/^appVersion:.*/appVersion:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml
+        run: |
+          sed -ie "s/^version:.*/version:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml
+          sed -ie "s/^appVersion:.*/appVersion:\ $BUILD_TAG/" charts/identity-platform/Chart.yaml
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
@@ -79,17 +83,10 @@ jobs:
           generateReleaseNotes: true
           makeLatest: true
 
-      - name: Get changelog
-        id: get_changelog
+      - name: Set helm chart URL
+        id: set_helm_chart_url
         run: |
-          {
-            echo "msg_changelog<<EOF"
-            cat CHANGELOG.md
-            echo
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-          #changelog="$(cat CHANGELOG.md)"
-          #echo -e "msg_changelog=\$(cat <<EOF\n$changelog\nEOF\n)" >>$GITHUB_OUTPUT
+          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url | sed -ie "s/$BUILD_TAG/identity-platform-$BUILD_TAG/" >>$GITHUB_ENV
 
       - name: Send Slack notification
         id: send_slack_notification
@@ -98,5 +95,5 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: webhook-trigger
           payload: |
-            msg: "ForgeOps release ${{ env.BUILD_TAG }} ${{ steps.create_github_release.outputs.html_url }}"
+            msg: "${{ steps.create_github_release.outputs.html_url }} $HELM_RELEASE_URL"
 
