@@ -342,6 +342,16 @@ entries:
     - https://github.com/ForgeRock/deleteme/releases/download/identity-platform-202411251637/identity-platform-202411251637.tgz
     version: "202411251637"
   - apiVersion: v2
+    appVersion: 2024.12.3
+    created: "2024-12-20T03:56:27.854775Z"
+    description: A Helm chart for Kubernetes
+    digest: cd058246dd4bff4af8552755647d7bd760f7e18781a5313254e3603a425fe8c2
+    name: identity-platform
+    type: application
+    urls:
+    - https://github.com/ForgeRock/deleteme/releases/download/identity-platform-2024.12.3/identity-platform-2024.12.3.tgz
+    version: 2024.12.3
+  - apiVersion: v2
     appVersion: 2024.12.2
     created: "2024-12-12T06:27:46.029231342Z"
     description: A Helm chart for Kubernetes
@@ -371,4 +381,4 @@ entries:
     urls:
     - https://github.com/ForgeRock/deleteme/releases/download/identity-platform-2024.12.0/identity-platform-2024.12.0.tgz
     version: 2024.12.0
-generated: "2024-12-12T06:27:46.029612007Z"
+generated: "2024-12-20T03:56:27.855023081Z"
