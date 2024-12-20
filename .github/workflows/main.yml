@@ -70,7 +70,7 @@ jobs:
         run: |
           sed -ie "s/^version:.*/version:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
           sed -ie "s/^appVersion:.*/appVersion:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
-          sed -ie "s/tag:\ latest/tag:\ '${{ env.BUILD_TAG }}'/g" charts/identity-platform/values.yaml
+          sed -ie "s/tag:\ latest/tag:\ \"${{ env.BUILD_TAG }}\"/g" charts/identity-platform/values.yaml
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
