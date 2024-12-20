@@ -398,7 +398,7 @@ admin_ui:
   replicaCount: 1
 
   image:
-    repository: gcr.io/forgerock-io/platform-admin-ui/docker-build
+    repository: us-docker.pkg.dev/forgeops-public/images/admin-ui
     tag: latest
     pullPolicy: IfNotPresent
     imagePullSecrets: []
@@ -466,7 +466,7 @@ end_user_ui:
   replicaCount: 1
 
   image:
-    repository: gcr.io/forgerock-io/platform-enduser-ui/docker-build
+    repository: us-docker.pkg.dev/forgeops-public/images/end-user-ui
     tag: latest
     pullPolicy: IfNotPresent
     imagePullSecrets: []
@@ -534,7 +534,7 @@ login_ui:
   replicaCount: 1
 
   image:
-    repository: gcr.io/forgerock-io/platform-login-ui/docker-build
+    repository: us-docker.pkg.dev/forgeops-public/images/login-ui
     tag: latest
     pullPolicy: IfNotPresent
     imagePullSecrets: []
