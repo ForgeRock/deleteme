@@ -19,7 +19,7 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -41,7 +41,7 @@ jobs:
       - name: Set tag
         id: set_tag
         run: |
-          RELEASE_TAG=$(date +%Y.%m)
+          RELEASE_TAG=$(date +%Y.%-m)
           latest_tag=${{ steps.get_latest_release.outputs.tag_name }}
           major="$(echo $latest_tag | cut -d '.' -f 1)"
           minor="$(echo $latest_tag | cut -d '.' -f 2)"
@@ -49,7 +49,7 @@ jobs:
           [ -n "$patch" ] && patch=$((patch+1)) || patch=0
           RELEASE_TAG="$RELEASE_TAG.$patch"
           echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
-          echo "BUILD_TAG=$(date +%Y%m%d%H%M)" >> $GITHUB_ENV
+          echo "BUILD_TAG=$RELEASE_TAG-$(date +%H%M)" >> $GITHUB_ENV
 
       - name: Build
         id: bake
@@ -101,25 +101,3 @@ jobs:
           bodyFile: CHANGELOG.md
           generateReleaseNotes: true
           makeLatest: true
-
-      - name: Send Slack release notification
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: webhook-trigger
-          payload: |
-            msg: "${{ steps.create_github_release.outputs.html_url }}"
-
-      - name: Set helm chart URL
-        id: set_helm_chart_url
-        run: |
-          echo "HELM_RELEASE_URL=${{ steps.create_github_release.outputs.html_url }}" | sed -e "s/${{ env.RELEASE_TAG }}/identity-platform-${{ env.RELEASE_TAG }}/" >>$GITHUB_ENV
-
-      - name: Send Slack helm release notification
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: webhook-trigger
-          payload: |
-            msg: "${{ env.HELM_RELEASE_URL }}"
-
