@@ -18,7 +18,7 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v3.3.0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -29,14 +29,6 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ vars.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
-
-      - name: Get latest release
-        id: get_latest_release
-        uses: joutvhu/get-release@v1
-        with:
-          latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set tag
         id: set_tag
