@@ -41,6 +41,10 @@ jobs:
       - name: Start minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
+        with:
+          cpus: 8
+          memory: 8000m
+          addons: storage-provisioner,default-storageclass,ingress
 
       - name: Cluster prereqs
         run: |
