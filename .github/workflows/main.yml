@@ -30,6 +30,27 @@ jobs:
           username: ${{ vars.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
+      - name: Set tag
+        id: set_tag
+        run: |
+          RELEASE_TAG=$(head -n 1 CHANGELOG.md | awk -F= '{print $2}')
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+          echo "BUILD_TAG=$RELEASE_TAG-$(date +%H%M)" >> $GITHUB_ENV
+
+      - name: Build
+        id: bake
+        uses: docker/bake-action@v5
+        with:
+          source: "{{defaultContext}}:docker"
+          push: true
+          files: |
+            ./docker-bake.hcl
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Get latest release
         id: get_latest_release
         uses: joutvhu/get-release@v1
@@ -59,33 +80,18 @@ jobs:
             --version ${{ steps.get_latest_release.outputs.tag_name }} \
             --namespace identity-platform --install
 
-      - name: Set tag
-        id: set_tag
-        run: |
-          RELEASE_TAG=$(head -n 1 CHANGELOG.md | awk -F= '{print $2}')
-          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
-          echo "BUILD_TAG=$RELEASE_TAG-$(date +%H%M)" >> $GITHUB_ENV
-
-      - name: Build
-        id: bake
-        uses: docker/bake-action@v5
-        with:
-          source: "{{defaultContext}}:docker"
-          push: true
-          files: |
-            ./docker-bake.hcl
-
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
       - name: Update helm chart
         id: update_helm_chart
         run: |
           sed -ie "s/^version:.*/version:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
           sed -ie "s/^appVersion:.*/appVersion:\ ${{ env.RELEASE_TAG }}/" charts/identity-platform/Chart.yaml
           sed -ie "s/tag:\ latest/tag:\ \"${{ env.BUILD_TAG }}\"/g" charts/identity-platform/values.yaml
+
+      - name: Helm deploy upgrade
+        run: |
+          cd charts/identity-platform
+          helm upgrade identity-platform . \
+            --namespace identity-platform --install
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
