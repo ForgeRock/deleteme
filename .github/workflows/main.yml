@@ -47,6 +47,14 @@ jobs:
           kubectl apply -f ./cluster/resources/minikube-fast-storage-class.yaml
           ./charts/scripts/install-prereqs
 
+      - name: Helm deploy latest
+        run: |
+          kubectl create namespace identity-platform
+          helm upgrade identity-platform identity-platform \
+            --repo https://ForgeRock.github.io/forgeops/ \
+            --version ${{ steps.get_latest_release.outputs.tag_name }} \
+            --namespace identity-platform --install
+
       - name: Set tag
         id: set_tag
         run: |
