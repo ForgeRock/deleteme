@@ -1,4 +1,4 @@
-RELEASE=2025.1.1
+RELEASE=2025.1.2
 # Release Notes  
 
 ## New Features/Updated functionality
