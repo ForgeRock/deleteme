@@ -18,14 +18,10 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.3.0
-        with:
-          image: tonistiigi/binfmt:qemu-v9.2.0-51
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.8.0
-        with:
-          version: v0.19.3
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to registry
         uses: docker/login-action@v3
@@ -33,6 +29,21 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ vars.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Get latest release
+        id: get_latest_release
+        uses: joutvhu/get-release@v1
+        with:
+          latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+
+      - name: kubectl
+        run: kubectl get pods -A
 
       - name: Set tag
         id: set_tag
@@ -43,7 +54,7 @@ jobs:
 
       - name: Build
         id: bake
-        uses: docker/bake-action@v6
+        uses: docker/bake-action@v5
         with:
           source: "{{defaultContext}}:docker"
           push: true
